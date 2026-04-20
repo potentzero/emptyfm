@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmptyFM - Listen to your favorite FM Radio station from your browser</title>
+  <link rel="shorcut icon" type="image/png"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAF4SURBVHgB7Zj/jURQEMfH5f7cLWC3gG1AAwqgAA1QgAYoQAEUQAEUQAEKoAAK4P+7+74ccbJ7e/Eum4nMJ5H48cT7mJk3wTBN84MOwBsdBBHhhohwQ0S4ISLcEBFuiAg3RIQbhxF5p3/gfD6T67rkOA5dLhd1rus6yrKMyrJ8eu/pdFL70zTROI60B0P3C/F6vVKSJIvAlr7vyfd9Gobh7nXP89QGmqZRY/eglVrPJOYxiIxt23ev3263ZX9vNIBWan1F84dEURRU17WaENJsnjzSJwxDJZWm6TIex5ZlLceIyF60RNZvGRJRFNF6Um3bUhAEyzmkEO6BLOpiLQGqqqK9aIms0wKT25LnuRKK43iJHKKAhWELIvWojv6CVo1glcHDsT3Kb6xeKODfVi9IrFNuD8Yr/2uhppBOiA7EIQlBnSKfMY7yg04a4ow0xG+kIW6QhgikIW6QhrjiMA1Rvtm5ISLcEBFuiAg3RIQbIsINEeHGYUQ+AbWJ/va1HA5qAAAAAElFTkSuQmCC">
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff;
+      --fg: #333;
+      --alt: #b7b7b7;
+    }
+
+    body {
+      font-size: 14px;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 0 2em;
+      margin: 2em auto;
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: verdana, arial, sans-serif, helvetica;
+      max-width: 590px;
+    }
+
+    .logo {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.7em;
+    }
+
+    a,
+    a:visited {
+      color: var(--fg);
+    }
+
+    .tagline {
+      font-size: 1rem;
+      margin-bottom: 1em;
+    }
+
+    .description {
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    .nav a {
+      margin-top: 0.5em;
+      font-size: 0.9rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    select,
+    button {
+      width: 100%;
+      height: 32px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      margin-bottom: 1em;
+    }
+
+    button {
+      font-family: verdana, arial, sans-serif, helvetica;
+      font-size: 1.2rem;
+      padding: 0 1em;
+      background: #15C;
+      border: 1px solid var(--fg);
+      color: white;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+
+    #fmlist {
+      display: flex;
+      flex-direction: column;
+      margin: 1em 0 4em;
+    }
+
+    #fmlist a {
+      margin-bottom: 0.7em;
+    }
+
+    #emptyfm {
+      position: fixed;
+      display: none;
+      width: 100vw;
+      left: 0;
+      bottom: 0;
+      background: #555;
+      height: 40px !important;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .recents {
+      background: #efefef;
+      margin: 2rem 0;
+    }
+
+    .recents ul {
+      max-height: 14em;
+      overflow-x: hidden;
+      overflow-y: auto;
+      margin: 0;
+    }
+
+    .recents li {
+      margin: 1em 0;
+    }
+
+    .recents div {
+      background: #666;
+      color: white;
+      margin: 0;
+      padding: 0 0.7em;
+      font-size: 1rem;
+    }
+
+    .video-js {
+      background: transparent;
+    }
+
+    .vjs-control-bar {
+      position: static !important;
+      padding-top: 5px;
+      background-color: #555 !important;
+    }
+
+    .vjs-fullscreen-control,
+    .vjs-picture-in-picture-control {
+      display: none !important;
+    }
+
+    .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+      opacity: 1 !important;
+    }
+
+    .vjs-big-play-button,
+    .vjs-loading-spinner {
+      display: none ! important;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="logo" href="/">EmptyFM</a>
+  <div class="tagline">Listen to your favorite FM Radio station from your browser.</div>
+  <p class="description">An in-browser app to listen to various FM Radio stations around the world - No data goes to the
+    server.</p>
+  <div class="nav">
+    <p>A project by <a href="https://nirm.al" target="_blank">Nirmal Kumar R</a>. Find the <a
+        href="https://github.com/mysticmode/emptyfm" target="_blank">source code</a>.</p>
+    <p>Acknowledgements: Purely goes to <a href="https://www.radio-browser.info" target="_blank">RadioBrowser</a>.</p>
+  </div>
+
+  <header>
+    <div class="recents">
+      <div>Recents</div>
+      <ul id="recentList"></ul>
+    </div>
+
+    <div class="form-item">
+      <label for="countryCode">Choose a country:</label>
+      <select name="country_code" id="countryCode">
+        <option value="" selected>None</option>
+      </select>
+    </div>
+
+    <div class="form-item">
+      <label for="languages">Choose a language:</label>
+      <select name="languages" id="languages">
+        <option value="" selected>None</option>
+      </select>
+    </div>
+
+    <div class="form-item">
+      <button onclick="fetchFMStations()">Find stations</button>
+    </div>
+  </header>
+
+  <div class="fmstations" id="fmlist"></div>
+
+  <video id="emptyfm" class="video-js" controls preload="auto" data-setup="{}">
+  </video>
+
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script src="https://unpkg.com/browse/@videojs/http-streaming@2.6.0/dist/videojs-http-streaming.min.js"></script>
+
+  <script src="emptyfm.js"></script>
+</body>
+
+</html>
